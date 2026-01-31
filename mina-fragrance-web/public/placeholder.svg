@@ -1,0 +1,16 @@
+<svg width="400" height="500" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="500" fill="url(#gradient)"/>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FDF2F8"/>
+      <stop offset="100%" style="stop-color:#FCE7F3"/>
+    </linearGradient>
+  </defs>
+  <g opacity="0.3">
+    <circle cx="200" cy="200" r="80" stroke="#EC4899" stroke-width="2" fill="none"/>
+    <circle cx="200" cy="200" r="60" stroke="#EC4899" stroke-width="1" fill="none"/>
+    <path d="M200 140 L200 260 M140 200 L260 200" stroke="#EC4899" stroke-width="1"/>
+  </g>
+  <text x="200" y="320" text-anchor="middle" fill="#9CA3AF" font-family="serif" font-size="16">MinaaFragrance</text>
+  <text x="200" y="345" text-anchor="middle" fill="#D1D5DB" font-family="sans-serif" font-size="12">Image non disponible</text>
+</svg>
