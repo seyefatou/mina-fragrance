@@ -4,7 +4,7 @@
   "description": "API Backend pour MinaaFragrance - E-commerce",
   "scripts": {
     "build": "nest build",
-    "build:prod": "npx prisma generate && npx prisma db push && nest build",
+    "build:prod": "npx prisma generate && npx prisma db push && npx nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
@@ -32,17 +32,17 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
-    "twilio": "^5.13.0"
+    "twilio": "^5.13.0",
+    "@nestjs/cli": "^10.3.0",
+    "prisma": "^5.8.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.3.0",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.0",
-    "@types/passport-jwt": "^4.0.1",
-    "prisma": "^5.8.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "@types/passport-jwt": "^4.0.1"
   }
 }
