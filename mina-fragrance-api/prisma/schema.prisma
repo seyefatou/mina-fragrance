@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -33,9 +33,9 @@ model Category {
 model Product {
   id          String      @id @default(uuid())
   name        String
-  description String
+  description String      @db.Text
   price       Float
-  images      String      @default("[]")
+  images      String      @default("[]") @db.Text
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
   stock       Int         @default(0)

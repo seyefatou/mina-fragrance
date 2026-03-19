@@ -9,8 +9,20 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Enable CORS
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3002',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3002',
+  ];
+
+  // Ajouter le domaine frontend en production (Vercel)
+  if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+  }
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3002', 'http://127.0.0.1:3000', 'http://127.0.0.1:3002'],
+    origin: allowedOrigins,
     credentials: true,
   });
 
@@ -45,7 +57,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.log(`🌸 Mina Fragrance API running on http://localhost:${port}`);
   console.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
 }
