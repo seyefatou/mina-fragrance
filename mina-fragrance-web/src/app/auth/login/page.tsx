@@ -77,6 +77,12 @@ export default function LoginPage() {
               required
             />
 
+            <div className="flex justify-end">
+              <Link href="/auth/forgot-password" className="text-sm text-rose-500 hover:text-rose-600">
+                Mot de passe oublié?
+              </Link>
+            </div>
+
             <Button type="submit" isLoading={isLoading} className="w-full">
               Se connecter
             </Button>

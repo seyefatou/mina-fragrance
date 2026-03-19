@@ -25,6 +25,7 @@ export default function AdminProductsPage() {
     images: [] as string[],
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [filterCategory, setFilterCategory] = useState('');
 
   const { data: productsData, isLoading } = useQuery({
     queryKey: ['products', 'admin'],
@@ -181,6 +182,22 @@ export default function AdminProductsPage() {
         </Button>
       </div>
 
+      {/* Category Filter */}
+      <div className="mb-4">
+        <select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm"
+        >
+          <option value="">Toutes les catégories</option>
+          {categories?.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Products Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full">
@@ -213,14 +230,18 @@ export default function AdminProductsPage() {
                   Chargement...
                 </td>
               </tr>
-            ) : productsData?.products?.length === 0 ? (
+            ) : (() => {
+              const filtered = productsData?.products?.filter(
+                (p) => !filterCategory || p.categoryId === filterCategory
+              );
+              return filtered?.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
-                  Aucun produit. Créez-en un!
+                  Aucun produit. {filterCategory ? 'Aucun produit dans cette catégorie.' : 'Créez-en un!'}
                 </td>
               </tr>
             ) : (
-              productsData?.products?.map((product) => (
+              filtered?.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -287,7 +308,8 @@ export default function AdminProductsPage() {
                   </td>
                 </tr>
               ))
-            )}
+            );
+            })()}
           </tbody>
         </table>
       </div>

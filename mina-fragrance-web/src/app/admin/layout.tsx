@@ -9,6 +9,7 @@ import {
   Package,
   FolderTree,
   ShoppingCart,
+  Users,
   ArrowLeft,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
@@ -18,6 +19,7 @@ const sidebarLinks = [
   { href: '/admin/products', label: 'Produits', icon: Package },
   { href: '/admin/categories', label: 'Catégories', icon: FolderTree },
   { href: '/admin/orders', label: 'Commandes', icon: ShoppingCart },
+  { href: '/admin/admins', label: 'Admins', icon: Users },
 ];
 
 export default function AdminLayout({

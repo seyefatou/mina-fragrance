@@ -38,15 +38,25 @@ export class CreateOrderDto {
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
 
-  @ApiPropertyOptional({ example: '123 Rue de Paris, 75001 Paris' })
+  @ApiPropertyOptional({ example: 'Dalal Diam, Dakar' })
   @IsString()
   @IsOptional()
   address?: string;
 
-  @ApiPropertyOptional({ example: '+33 6 12 34 56 78' })
+  @ApiPropertyOptional({ example: '+221 77 123 45 67' })
   @IsString()
   @IsOptional()
   phone?: string;
+
+  @ApiPropertyOptional({ example: 'Fatou Diallo' })
+  @IsString()
+  @IsOptional()
+  guestName?: string;
+
+  @ApiPropertyOptional({ example: 'fatou@email.com' })
+  @IsString()
+  @IsOptional()
+  guestEmail?: string;
 }
 
 export class UpdateOrderStatusDto {

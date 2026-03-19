@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { Toaster } from 'react-hot-toast';
+import { LayoutWrapper } from '@/components/layout/LayoutWrapper';
 
 export const metadata: Metadata = {
   title: 'MinaaFragrance - Votre monde, parfumé à la perfection',
@@ -50,12 +48,9 @@ export default function RootLayout({
               },
             }}
           />
-          <Header />
-          <main className="flex-grow">
+          <LayoutWrapper>
             {children}
-          </main>
-          <Footer />
-          <WhatsAppButton />
+          </LayoutWrapper>
         </Providers>
       </body>
     </html>

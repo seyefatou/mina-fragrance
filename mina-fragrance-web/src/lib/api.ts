@@ -41,6 +41,18 @@ export const authApi = {
     const response = await api.get('/auth/profile');
     return response.data;
   },
+  forgotPassword: async (email: string) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+  resetPassword: async (token: string, newPassword: string) => {
+    const response = await api.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  },
+  changePassword: async (currentPassword: string, newPassword: string) => {
+    const response = await api.put('/auth/change-password', { currentPassword, newPassword });
+    return response.data;
+  },
 };
 
 // Categories
@@ -125,12 +137,46 @@ export const ordersApi = {
     const response = await api.post<Order>('/orders', data);
     return response.data;
   },
+  createGuest: async (data: {
+    items: Array<{ productId: string; quantity: number }>;
+    address?: string;
+    phone?: string;
+    guestName?: string;
+    guestEmail?: string;
+  }) => {
+    const response = await api.post<Order>('/orders/guest', data);
+    return response.data;
+  },
   updateStatus: async (id: string, status: string) => {
     const response = await api.put<Order>(`/orders/${id}/status`, { status });
     return response.data;
   },
   getStats: async () => {
     const response = await api.get<OrderStats>('/orders/stats');
+    return response.data;
+  },
+};
+
+// Admins
+export const adminsApi = {
+  getAll: async () => {
+    const response = await api.get('/users/admins');
+    return response.data;
+  },
+  create: async (data: { email: string; password: string; name: string }) => {
+    const response = await api.post('/users/admins', data);
+    return response.data;
+  },
+  update: async (id: string, data: { name?: string; email?: string; password?: string }) => {
+    const response = await api.put(`/users/admins/${id}`, data);
+    return response.data;
+  },
+  toggle: async (id: string) => {
+    const response = await api.put(`/users/admins/${id}/toggle`);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await api.delete(`/users/admins/${id}`);
     return response.data;
   },
 };

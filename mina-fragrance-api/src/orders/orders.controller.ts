@@ -52,11 +52,19 @@ export class OrdersController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Crée une nouvelle commande' })
+  @ApiOperation({ summary: 'Crée une commande (utilisateur connecté)' })
   @ApiResponse({ status: 201, description: 'Commande créée', type: OrderResponseDto })
   @ApiResponse({ status: 400, description: 'Données invalides ou stock insuffisant' })
   create(@Body() createOrderDto: CreateOrderDto, @Request() req: any) {
     return this.ordersService.create(req.user.sub, createOrderDto);
+  }
+
+  @Post('guest')
+  @ApiOperation({ summary: 'Crée une commande (client non connecté)' })
+  @ApiResponse({ status: 201, description: 'Commande créée', type: OrderResponseDto })
+  @ApiResponse({ status: 400, description: 'Données invalides ou stock insuffisant' })
+  createGuest(@Body() createOrderDto: CreateOrderDto) {
+    return this.ordersService.create(null, createOrderDto);
   }
 
   @Put(':id/status')

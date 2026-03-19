@@ -60,8 +60,10 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
-  userId: string;
+  userId?: string;
   user?: User;
+  guestName?: string;
+  guestEmail?: string;
   items: OrderItem[];
   total: number;
   status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';

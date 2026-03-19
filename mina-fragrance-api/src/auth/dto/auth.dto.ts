@@ -57,3 +57,31 @@ export class AuthResponseDto {
   @ApiProperty()
   token: string;
 }
+
+export class ForgotPasswordDto {
+  @ApiProperty({ example: 'mina@example.com' })
+  @IsEmail()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
+  @IsString()
+  token: string;
+
+  @ApiProperty({ minLength: 6 })
+  @IsString()
+  @MinLength(6)
+  newPassword: string;
+}
+
+export class ChangePasswordDto {
+  @ApiProperty()
+  @IsString()
+  currentPassword: string;
+
+  @ApiProperty({ minLength: 6 })
+  @IsString()
+  @MinLength(6)
+  newPassword: string;
+}

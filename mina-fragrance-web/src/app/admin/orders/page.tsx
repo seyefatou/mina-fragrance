@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
 import { Eye, Clock, CheckCircle, Truck, Package, XCircle } from 'lucide-react';
-import { ordersApi } from '@/lib/api';
+import { ordersApi, getImageUrl, getProductImages } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import type { Order } from '@/types';
 import toast from 'react-hot-toast';
@@ -101,8 +102,17 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-gray-800">{order.user?.name}</p>
-                        <p className="text-sm text-gray-500">{order.user?.email}</p>
+                        <p className="text-gray-800">
+                          {order.user?.name || order.guestName || 'Client anonyme'}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {order.user?.email || order.guestEmail || order.phone || ''}
+                        </p>
+                        {!order.user && (
+                          <span className="text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded">
+                            Invité
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-500 text-sm">
@@ -155,9 +165,20 @@ export default function AdminOrdersPage() {
 
             {/* Customer Info */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="font-medium text-gray-800 mb-2">Client</h3>
-              <p className="text-gray-600">{selectedOrder.user?.name}</p>
-              <p className="text-gray-500 text-sm">{selectedOrder.user?.email}</p>
+              <h3 className="font-medium text-gray-800 mb-2">
+                Client
+                {!selectedOrder.user && (
+                  <span className="ml-2 text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded">
+                    Invité
+                  </span>
+                )}
+              </h3>
+              <p className="text-gray-600">
+                {selectedOrder.user?.name || selectedOrder.guestName || 'Client anonyme'}
+              </p>
+              <p className="text-gray-500 text-sm">
+                {selectedOrder.user?.email || selectedOrder.guestEmail || ''}
+              </p>
               {selectedOrder.phone && (
                 <p className="text-gray-500 text-sm mt-2">Tel: {selectedOrder.phone}</p>
               )}
@@ -173,9 +194,23 @@ export default function AdminOrdersPage() {
                 {selectedOrder.items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                   >
-                    <div>
+                    <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                      {item.product ? (
+                        <Image
+                          src={getImageUrl(getProductImages(item.product.images)[0])}
+                          alt={item.product.name}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Package className="w-5 h-5" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-grow">
                       <p className="font-medium text-gray-800">
                         {item.product?.name || 'Produit supprimé'}
                       </p>
@@ -183,7 +218,7 @@ export default function AdminOrdersPage() {
                         {item.price.toLocaleString('fr-FR')} FCFA x {item.quantity}
                       </p>
                     </div>
-                    <p className="font-medium text-gray-800">
+                    <p className="font-medium text-gray-800 flex-shrink-0">
                       {(item.price * item.quantity).toLocaleString('fr-FR')} FCFA
                     </p>
                   </div>

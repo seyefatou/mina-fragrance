@@ -17,34 +17,49 @@ export default function CartPage() {
   const { user } = useAuthStore();
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCheckout = async () => {
-    if (!user) {
-      toast.error('Veuillez vous connecter pour passer commande');
-      router.push('/auth/login');
-      return;
-    }
-
     if (items.length === 0) {
       toast.error('Votre panier est vide');
       return;
     }
 
+    if (!user && !guestName) {
+      toast.error('Veuillez entrer votre nom');
+      return;
+    }
+
+    if (!phone) {
+      toast.error('Veuillez entrer votre numéro de téléphone');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const order = await ordersApi.create({
-        items: items.map((item) => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-        })),
-        address,
-        phone,
-      });
+      const orderItems = items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+      }));
+
+      let order;
+      if (user) {
+        order = await ordersApi.create({ items: orderItems, address, phone });
+      } else {
+        order = await ordersApi.createGuest({
+          items: orderItems,
+          address,
+          phone,
+          guestName,
+          guestEmail,
+        });
+      }
 
       clearCart();
       toast.success('Commande passée avec succès!');
-      router.push(`/orders/${order.id}`);
+      router.push('/');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Erreur lors de la commande');
     } finally {
@@ -172,19 +187,38 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Shipping Info */}
+              {/* Client Info */}
               <div className="space-y-4 mb-6">
+                {!user && (
+                  <>
+                    <Input
+                      label="Votre nom *"
+                      placeholder="Ex: Fatou Diallo"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      required
+                    />
+                    <Input
+                      label="Email"
+                      type="email"
+                      placeholder="votre@email.com"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                    />
+                  </>
+                )}
+                <Input
+                  label="Téléphone *"
+                  placeholder="+221 77 123 45 67"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
                 <Input
                   label="Adresse de livraison"
                   placeholder="Dalal Diam, Dakar"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                />
-                <Input
-                  label="Téléphone"
-                  placeholder="+221 77 123 45 67"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
 

@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { SmsService } from '../sms/sms.service';
 import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private smsService: SmsService,
+  ) {}
 
   async findAll(userId?: string, isAdmin = false) {
     const where = isAdmin ? {} : { userId };
@@ -59,7 +63,7 @@ export class OrdersService {
     return order;
   }
 
-  async create(userId: string, createOrderDto: CreateOrderDto) {
+  async create(userId: string | null, createOrderDto: CreateOrderDto) {
     const productIds = createOrderDto.items.map((item) => item.productId);
     const products = await this.prisma.product.findMany({
       where: { id: { in: productIds } },
@@ -90,16 +94,24 @@ export class OrdersService {
       };
     });
 
-    const order = await this.prisma.order.create({
-      data: {
-        userId,
-        total,
-        address: createOrderDto.address,
-        phone: createOrderDto.phone,
-        items: {
-          create: orderItems,
-        },
+    const orderData: any = {
+      total,
+      address: createOrderDto.address,
+      phone: createOrderDto.phone,
+      items: {
+        create: orderItems,
       },
+    };
+
+    if (userId) {
+      orderData.userId = userId;
+    } else {
+      orderData.guestName = createOrderDto.guestName;
+      orderData.guestEmail = createOrderDto.guestEmail;
+    }
+
+    const order = await this.prisma.order.create({
+      data: orderData,
       include: {
         items: {
           include: {
@@ -132,7 +144,7 @@ export class OrdersService {
       throw new NotFoundException('Commande non trouvée');
     }
 
-    return this.prisma.order.update({
+    const updatedOrder = await this.prisma.order.update({
       where: { id },
       data: {
         status: updateStatusDto.status,
@@ -152,6 +164,26 @@ export class OrdersService {
         },
       },
     });
+
+    // Envoyer un SMS au client si un numéro de téléphone est disponible
+    const phone = updatedOrder.phone;
+    if (phone) {
+      const orderRef = updatedOrder.id.slice(0, 8).toUpperCase();
+
+      switch (updateStatusDto.status) {
+        case 'CONFIRMED':
+          await this.smsService.sendOrderConfirmed(phone, orderRef, updatedOrder.total);
+          break;
+        case 'SHIPPED':
+          await this.smsService.sendOrderShipped(phone, orderRef);
+          break;
+        case 'DELIVERED':
+          await this.smsService.sendOrderDelivered(phone, orderRef);
+          break;
+      }
+    }
+
+    return updatedOrder;
   }
 
   async getStats() {
