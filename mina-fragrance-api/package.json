@@ -4,10 +4,10 @@
   "description": "API Backend pour MinaaFragrance - E-commerce",
   "scripts": {
     "build": "nest build",
-    "build:prod": "npx prisma generate && npx prisma db push && tsc -p tsconfig.json",
+    "build:prod": "npx prisma generate && tsc -p tsconfig.json",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "npx prisma db push && node dist/main",
     "db:seed": "ts-node prisma/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
