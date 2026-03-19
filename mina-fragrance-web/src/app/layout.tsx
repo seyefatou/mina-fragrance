@@ -9,6 +9,10 @@ import { Toaster } from 'react-hot-toast';
 export const metadata: Metadata = {
   title: 'MinaaFragrance - Votre monde, parfumé à la perfection',
   description: 'Découvrez notre collection exclusive de parfums, brumes, laits de corps, huiles vergeture, déodorants, gels de douche et crèmes. Qualité premium au Sénégal.',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   keywords: ['parfum', 'brume', 'lait de corps', 'déodorant', 'gel douche', 'crème main', 'huile vergeture', 'Sénégal', 'MinaaFragrance'],
   authors: [{ name: 'MinaaFragrance' }],
   openGraph: {
